@@ -1,5 +1,8 @@
 # Dolphin
-Species Distribution Model for Dolphins Family
+'Caribbean and Gulf of Mexico distribution model for key dolphin species.'
+Luis David Almeida Famada. EAGLE - Applied Earth Observation and Geoanalysis, University of Würzburg
+
+
 # Introduction
 
 This is a final project of the course: **Introduction to Programming and Geostatistics within the Master Program Applied Earth Observation and Geoanalysis** at the University of Würzburg with Professors Dr. Martin Wegmann and Dr. Jackob Schwalb-Willmann.
