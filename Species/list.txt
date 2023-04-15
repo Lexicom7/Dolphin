@@ -1,0 +1,47 @@
+Lagenorhynchus albirostris, Feresa attenuata, Peponocephala electra, Globicephala macrorhynchus, Globicephala melas, Pseudorca crassidens, Grampus griseus, Orcinus orca, Steno bredanensis, Stenella attenuata,  Tursiops truncatus, Stenella coeruleoalba and Phocoena phocoena.
+
+
+
+# List of species names
+species_list <- c("Lagenorhynchus albirostris", "Feresa attenuata", "Peponocephala electra", "Globicephala macrorhynchus", "Globicephala melas", "Pseudorca crassidens", "Grampus griseus", "Orcinus orca", "Steno bredanensis", "Stenella attenuata", "Tursiops truncatus", "Stenella coeruleoalba", "Phocoena phocoena")
+
+# Initialize an empty list to store the prediction rasters
+prediction_list <- list()
+
+# Loop through each species
+for (species_name in species_list) {
+  # Split the species name into genus and species
+  genus_name <- strsplit(species_name, " ")[[1]][1]
+  species <- strsplit(species_name, " ")[[1]][2]
+  
+  # Obtain Species Presence from GBIF data base
+  species_data <- gbif(genus = genus_name,
+                       species = species,
+                       ext = shp_ROI_transformed,
+                       download = TRUE,
+                       geo = TRUE,
+                       sp = FALSE)
+  
+  # Filter and select relevant columns
+  species_data <- species_data %>%
+    dplyr::filter(lon != 0) %>%
+    dplyr::select(lon, lat)
+  
+  # Convert to SpatialPointsDataFrame
+  species_data_sp <- SpatialPointsDataFrame(coords = species_data, data = species_data, proj4string = CRS(proj4string(Variables)))
+  
+  # Update presence_points and bg_points with the new species data
+  # Your code for preparing the presence data and Maxent model should be updated here to use 'species_data_sp' instead of 'Stenella_clymene_sp'
+  
+  # Run Maxent model and make predictions
+  # Your code for running the Maxent model and making predictions should be updated here to use the new presence data for the current species
+  
+  # Store the prediction raster in the list
+  prediction_list[[species_name]] <- Stenella_clymene_Prediction
+}
+
+# Calculate the mean of the predictions and create the combined raster
+combined_prediction_raster <- mean(prediction_list)
+
+# Plot the combined prediction raster
+plot(combined_prediction_raster, main = "Mean prediction for all species")

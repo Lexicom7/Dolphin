@@ -1,0 +1,19 @@
+Predictor variable,Categorical,Sample average
+CalciteMean,false,0.004063483146586638
+CurrentVelocityMax,false,0.8532430455088614
+CurrentVelocityMin,false,0.0679537841077015
+NitrateMean,false,1.4053933370786518
+ParMean_BOv22,false,39.38377530387279
+PhosphateMean,false,0.004388764044943819
+PrimaryProductivityMean,false,0.005960831460674157
+b10_MaximumMonthlySSS,false,3573.586464185393
+b12_AnnualVarianceSSS,false,5101.1485818584315
+b15_SSTwarmestIceFreeMonth,false,2890.672110911166
+b1_EastWestAspect,false,25.451600474336843
+b2_NorthSouthAspect,false,-25.92150851648845
+b3_PlanCurvature,false,-0.32097603231040656
+b5_DistancetoShore,false,119.58907695298784
+b6_BathymetricSlope,false,13.873064063913246
+b7_Concavity,false,1.8441452456224872
+bathymetry_30s,false,-1179.2728844305102
+pH_BOv22,false,8.159550527508339
