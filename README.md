@@ -12,11 +12,11 @@ The project consists of several stages and has as a long-term goal the applicati
 
 In this first phase, we will start with an academic exercise using the _Stenella clymene_ or Clymene dolphin species to define the basis of the algorithm to be used for all species. Clymene dolphins are also known as "short-snouted spinners" because they often spin when they jump out of the water. Although there are no known major conservation problems for this species, it is likely that there are some undocumented problems. Some dolphins are killed in directed fisheries in the Caribbean, and others incidentally in nets throughout most of their range _(Jefferson, 2018)_
 
-![Clymene dolphin. ](SCHello.jpg){withd=80%}
+![Clymene dolphin. ](SCHello.jpg)
 
 The Clymene dolphin is found only in the Atlantic Ocean, in tropical to warm-temperate waters. The exact range is not well documented, especially in South Atlantic, Mid-Atlantic and West African waters.  Most sightings have been in deep, offshore waters, although Clymene dolphins are sometimes observed very close to shore where deep water approaches the coast (such as around some Caribbean islands). They are present year-round at least in the northern Gulf of Mexico and probably throughout much of their tropical range.
 
-![Clymene dolphin distribution. Source: Jefferson (2015) ](SCDist.jpg){withd=90%}
+![Clymene dolphin distribution. Source: Jefferson (2015) ](SCDist.jpg)
 # 1 Preparation of oceanographic variables and presence data.
 
 After this stage, the code for the processing of the 13 most representative species of the family _Delphinidae_ in these regions will be presented. In these first stages we will work only with the **GBIF (Global Biodiversity Information Facility)** databases, then we will improve the presence databases by relying on information from Cuban institutions and other publications in the region _(Barragán-Barrera et al., 2019)_. 
