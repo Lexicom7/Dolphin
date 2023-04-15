@@ -1,7 +1,17 @@
-# Dolphin
-'Caribbean and Gulf of Mexico distribution model for key dolphin species.'
-Luis David Almeida Famada. EAGLE - Applied Earth Observation and Geoanalysis, University of Würzburg
-
+title: 'Caribbean and Gulf of Mexico distribution model for key dolphin species.'
+author: "Luis David Almeida Famada. EAGLE - Applied Earth Observation and Geoanalysis, University of Würzburg"
+date: "2023-04-15"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    collapsed: true
+    smooth_scroll: true
+    theme: journal
+    highlight: kate
+    df_print: paged
+    code_folding: show
 
 # Introduction
 
