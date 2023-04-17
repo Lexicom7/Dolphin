@@ -1,8 +1,10 @@
 ---
-# Caribbean and Gulf of Mexico distribution model for key dolphin species.
-## Luis David Almeida Famada. EAGLE - Applied Earth Observation and Geoanalysis, University of Würzburg
-### 2023-04-15
 
+# Caribbean and Gulf of Mexico distribution model for key dolphin species
+
+## Luis David Almeida Famada. EAGLE - Applied Earth Observation and Geoanalysis, University of Würzburg
+
+### 2023-04-15
 
 # Introduction
 
@@ -12,25 +14,27 @@ The project consists of several stages and has as a long-term goal the applicati
 
 In this first phase, we will start with an academic exercise using the _Stenella clymene_ or Clymene dolphin species to define the basis of the algorithm to be used for all species. Clymene dolphins are also known as "short-snouted spinners" because they often spin when they jump out of the water. Although there are no known major conservation problems for this species, it is likely that there are some undocumented problems. Some dolphins are killed in directed fisheries in the Caribbean, and others incidentally in nets throughout most of their range _(Jefferson, 2018)_
 
-![Clymene dolphin. ](SCHello.jpg)
+![Clymene dolphin. ](images/SCHello.jpg)
 
 The Clymene dolphin is found only in the Atlantic Ocean, in tropical to warm-temperate waters. The exact range is not well documented, especially in South Atlantic, Mid-Atlantic and West African waters.  Most sightings have been in deep, offshore waters, although Clymene dolphins are sometimes observed very close to shore where deep water approaches the coast (such as around some Caribbean islands). They are present year-round at least in the northern Gulf of Mexico and probably throughout much of their tropical range.
 
-![Clymene dolphin distribution. Source: Jefferson (2015) ](SCDist.jpg)
-# 1 Preparation of oceanographic variables and presence data.
+![Clymene dolphin distribution. Source: Jefferson (2015) ](images/SCDist.jpg)
 
-After this stage, the code for the processing of the 13 most representative species of the family _Delphinidae_ in these regions will be presented. In these first stages we will work only with the **GBIF (Global Biodiversity Information Facility)** databases, then we will improve the presence databases by relying on information from Cuban institutions and other publications in the region _(Barragán-Barrera et al., 2019)_. 
+# 1 Preparation of oceanographic variables and presence data
+
+After this stage, the code for the processing of the 13 most representative species of the family _Delphinidae_ in these regions will be presented. In these first stages we will work only with the **GBIF (Global Biodiversity Information Facility)** databases, then we will improve the presence databases by relying on information from Cuban institutions and other publications in the region _(Barragán-Barrera et al., 2019)_.
 
 The oceanographic variables used were selected from the MARSPEC _(Sbrocco et al., 2013)_ and Bio-Oracle _(Assis et al., 2018)_ datasets. These two data sets are the most widely used globally for species distribution modeling _(Melo-Merino et al., 2020)_. Please refer to the respective websites for a description of the variables and the methodology used:
 
-**MARSPEC**: http://www.marspec.org/
-**Bio-ORACLE**: https://www.bio-oracle.org/index.php
+**MARSPEC**: <http://www.marspec.org/>
+**Bio-ORACLE**: <https://www.bio-oracle.org/index.php>
 
-It is possible to access these layers in many ways using APIs from within the R environment. One of the most widely used is the **"sdmpredictors"** package from Samuel Bosch _(https://github.com/lifewatch/sdmpredictors)_. For the purposes of this work and to save time in the reproduction of the code, all the previous information was compiled by preprocessing each layer and preparing it for later use by the models. In this link _(https://mega.nz/folder/QNJAwBqA#rYw4nxo4wa8KJ3CEgbVy4Q)_ you can download the layers already trimmed and resampled for the study area. The resampling codes can be found in the project folder.
+It is possible to access these layers in many ways using APIs from within the R environment. One of the most widely used is the **"sdmpredictors"** package from Samuel Bosch _(<https://github.com/lifewatch/sdmpredictors>)_. For the purposes of this work and to save time in the reproduction of the code, all the previous information was compiled by preprocessing each layer and preparing it for later use by the models. In this link _(<https://mega.nz/folder/QNJAwBqA#rYw4nxo4wa8KJ3CEgbVy4Q>)_ you can download the layers already trimmed and resampled for the study area. The resampling codes can be found in the project folder.
 
-It was necessary to investigate the availability of presence data in the GBIF database. For this purpose, the "dismo" package of Hijmans and collaborators _(https://rspatial.org/raster/sdm)_ was mainly used.
+It was necessary to investigate the availability of presence data in the GBIF database. For this purpose, the "dismo" package of Hijmans and collaborators _(<https://rspatial.org/raster/sdm>)_ was mainly used.
 
 Exploration of the availability of points of presence and species selection:
+
 ```{r message=FALSE, warning=FALSE}
 # Load required packages
 library(dismo)
@@ -106,15 +110,15 @@ ggplot(species_records, aes(x = reorder(Species, -RecordCount), y = RecordCount,
   guides(fill = FALSE)
 
 ```
+![Number of records available for each dolphin species ](images/grap1.png)
 
-# 2 Prepare the environmental in R for the single specie analysis (_Stenella clymene_).
+# 2 Prepare the environmental in R for the single specie analysis (_Stenella clymene_)
 
 After downloading the pre-processed variables together with the study area, we begin to prepare the working environment of our project in R Studio. All the libraries are necessary, but there are three that are unique to this type of analysis: **dismo**, **usdm** and **rJava**. The **dismo** package provides functions to model species distribution using various algorithms, such as Maxent, Random Forest, and Boosted Regression Trees. It is essential for species distribution modeling because it enables the implementation and evaluation of different models.The **usdm** package (Uncertainty Analysis for Species Distribution Models) provides functions to quantify and analyze the uncertainty in species distribution models. It is crucial for species distribution modeling because it helps assess the reliability and accuracy of model predictions.The **rJava** package provides a low-level bridge between R and Java, allowing R to use Java libraries and functions. Although not directly related to species distribution modeling, it is essential when using certain functions or packages that depend on Java, such as the Maxent algorithm in the dismo package.
 
 The line options(**java.parameters = "-Xmx12g"**) sets the maximum amount of memory that the Java Virtual Machine (JVM) can use within the R session. In this case, it is set to 12 gigabytes (12g).Keep in mind that the value you set for the maximum memory allocation should be based on the available memory on your system. Allocating too much memory to the JVM could cause your system to become unresponsive or crash. Be cautious when adjusting this value and ensure that your system has enough memory to accommodate your needs.
 
 The next part of the script is to load and process environmental data from two sources, **MARSPECT** and **Bio-Oracle**, along with a region of interest (ROI) shapefile. It sets the paths to the relevant folders, lists all the .tif and .tiff files, reads and stacks the rasters, and combines them into a single raster stack called 'Variables'. The script also prints the names of the layers in the stack and reads the ROI shapefile, transforming its projection to match the reference MARSPECT raster. The output is a combined raster stack with environmental data and a transformed shapefile representing the study area.
-
 
 ```{r message=FALSE, warning=FALSE}
 
@@ -169,9 +173,9 @@ shp_ROI_transformed <- spTransform(shp_ROI, proj4string(reference_marspect_raste
 
 ```
 
-# 3 Prepare presence data.
+# 3 Prepare presence data
 
-This code block is focused on obtaining and preparing species presence data for the _Stenella clymene_ (Clymene dolphin) from the **Global Biodiversity Information Facility (GBIF)** database and preparing it for Maxent modeling. 
+This code block is focused on obtaining and preparing species presence data for the _Stenella clymene_ (Clymene dolphin) from the **Global Biodiversity Information Facility (GBIF)** database and preparing it for Maxent modeling.
 
 First, it downloads the species presence data using the **gbif()** function with parameters specifying the genus, species, and desired output format. The data is limited to a specific geographic extent defined by _shp_ROI_transformed_, and only records with georeferences are downloaded. The code then provides an overview of the data's dimensions and column names and visualizes the presence points on a world map.
 
@@ -239,8 +243,9 @@ groupB <- kfold(bg_points, 5)
 bg_train <- bg_points[groupB != 1, ]
 bg_test <- bg_points[groupB == 1, ]
 ```
+![Stenella_clymene distribution ](images/speciesPoint.png)
 
-# 4 Choosing the best variables for the analysis.
+# 4 Choosing the best variables for the analysis
 
 Now we are need to exclude variables with high correlation from the environmental variables dataset to improve the performance of species distribution models.
 
@@ -249,7 +254,6 @@ First, the **extract()** function is used to obtain the values of environmental 
 Next, the **vifstep()** function is applied to the extracted values of environmental variables. The **Variance Inflation Factor (VIF)** is a measure of multicollinearity among predictor variables, and **vifstep()** is a stepwise variable selection method based on VIF. It identifies and removes variables with high multicollinearity, as they can lead to unstable parameter estimates in the model.
 
 Finally, the **exclude()** function is used to create a new dataset called Variables_Good that contains only the environmental variables with acceptable levels of multicollinearity. This dataset will be used for building the species distribution model without the influence of highly correlated variables.
-
 
 ```{r message=FALSE, warning=FALSE}
 # Exclude variables with high correlation
@@ -266,9 +270,9 @@ Variables_Good <- exclude(Variables, vifstep_var)
 names(Variables_Good)
 ```
 
-# 5 Apply the Maxent model.
+# 5 Apply the Maxent model
 
-An last we run a **Maxent *model**, evaluating its performance, and visualizing the results using the refined environmental variables and presence points data. MaxEnt (short for “Maximum Entropy”; _Phillips et al., 2006_) is the most widely used SDM algorithm. _Elith et al. (2010)_ provide an explanation of the algorithm (and software) geared towards ecologists. MaxEnt is available as a stand-alone Java program. Dismo has a function ‘maxent’ that communicates with this program.
+An last we run a **Maxent _model_*, evaluating its performance, and visualizing the results using the refined environmental variables and presence points data. MaxEnt (short for “Maximum Entropy”; _Phillips et al., 2006_) is the most widely used SDM algorithm. _Elith et al. (2010)_ provide an explanation of the algorithm (and software) geared towards ecologists. MaxEnt is available as a stand-alone Java program. Dismo has a function ‘maxent’ that communicates with this program.
 
 In this part we start with a custom function to extract environmental variables values within a buffer around each presence point. It returns the mean and standard deviation of the values within the buffer.Then the main Maxent model is created using the **maxent()** function with the refined environmental variables and training presence and background points. The custom my_extractor function is passed as an argument for extracting variables.The Model results visualization through  plot(maxent_model) function creates a variable contribution plot, while response(maxent_model) generates a response plot.The **evaluate()** function assesses the model performance using the testing presence and background points. The results are stored in evaluate_Max.
 
@@ -355,11 +359,13 @@ mapview(presence_absence, zcol = "value",
 .jinit() # initializes the Java Virtual Machine in R
 response(maxent_model) # A response plot
 ```
+![Stenella_clymene distribution ](images/contrib.png)
+
 # 6 Analysis of the result with Protected Areas and Exclusive Economic Zone
 
 The last part of the analysis we reads in two shapefiles representing Exclusive Economic Zone and International Hydrographic Organization (EEZ-IHO) areas and Protected Areas (WDPA) and transforms them to match the projection of a raster file called "presence_absence". It then extracts the presence-absence values for each polygon in both shapefiles, calculates the count of presence pixels within each polygon, and adds the presence count as a new column to each shapefile. The code then calculates the sum of Presence_Count for each unique value in the EEZ and ISO3 columns of the EEZ-IHO and WDPA shapefiles, respectively, and prints the results in descending order. This code is likely being used to analyze the distribution of dolphins in relation to protected areas and EEZ-IHO areas.
 
-In a preliminary analysis of the governance of the potential habitat of the species, we realise that the United States, Mexico and Cuba have a predominant influence on the conservation of the species. In addition, the low coverage of the current system of protected areas in this region is evident, without discriminating against areas that are not approved or do not have a management plan. 
+In a preliminary analysis of the governance of the potential habitat of the species, we realise that the United States, Mexico and Cuba have a predominant influence on the conservation of the species. In addition, the low coverage of the current system of protected areas in this region is evident, without discriminating against areas that are not approved or do not have a management plan.
 
 This preliminary work has a high potential for further analysis of the status of marine dolphin species.
 
@@ -405,21 +411,20 @@ WDPA_sum <- WDPA_sum[order(WDPA_sum$WDPA_counts, decreasing = TRUE), ]
 print(WDPA_sum)
 ```
 
-
 # Bibliography
 
-Barragán-Barrera, D. C., do Amaral, K. B., Chávez-Carreño, P. A., Farías-Curtidor, N., Lancheros-Neva, R., Botero-Acosta, N., Bueno, P., Moreno, I. B., Bolaños-Jiménez, J., Bouveret, L., Castelblanco-Martínez, D. N., Luksenburg, J. A., Mellinger, J., Mesa-Gutiérrez, R., de Montgolfier, B., Ramos, E. A., Ridoux, V., & Palacios, D. M. (2019). Ecological Niche Modeling of Three Species of Stenella Dolphins in the Caribbean Basin, With Application to the Seaflower Biosphere Reserve. Frontiers in Marine Science, 6, 10. https://doi.org/10.3389/fmars.2019.00010
+Barragán-Barrera, D. C., do Amaral, K. B., Chávez-Carreño, P. A., Farías-Curtidor, N., Lancheros-Neva, R., Botero-Acosta, N., Bueno, P., Moreno, I. B., Bolaños-Jiménez, J., Bouveret, L., Castelblanco-Martínez, D. N., Luksenburg, J. A., Mellinger, J., Mesa-Gutiérrez, R., de Montgolfier, B., Ramos, E. A., Ridoux, V., & Palacios, D. M. (2019). Ecological Niche Modeling of Three Species of Stenella Dolphins in the Caribbean Basin, With Application to the Seaflower Biosphere Reserve. Frontiers in Marine Science, 6, 10. <https://doi.org/10.3389/fmars.2019.00010>
 
-Carmezim, J., Pennino, M. G., Martínez-Minaya, J., Conesa, D., & Coll, M. (2022). A mesoscale analysis of relations between fish species richness and environmental and anthropogenic pressures in the Mediterranean Sea. Marine Environmental Research, 180, 105702. https://doi.org/10.1016/j.marenvres.2022.105702
+Carmezim, J., Pennino, M. G., Martínez-Minaya, J., Conesa, D., & Coll, M. (2022). A mesoscale analysis of relations between fish species richness and environmental and anthropogenic pressures in the Mediterranean Sea. Marine Environmental Research, 180, 105702. <https://doi.org/10.1016/j.marenvres.2022.105702>
 
-Jefferson, T. A. (2018). Clymene Dolphin. In Encyclopedia of Marine Mammals (pp. 197–200). Elsevier. https://doi.org/10.1016/B978-0-12-804327-1.00093-5
+Jefferson, T. A. (2018). Clymene Dolphin. In Encyclopedia of Marine Mammals (pp. 197–200). Elsevier. <https://doi.org/10.1016/B978-0-12-804327-1.00093-5>
 
 Jefferson, T.A., Webber, M.A., and Pitman, R.L. (2015). “Marine Mammals of the World: A Comprehensive Guide to Their Identification,” 2nd ed. Elsevier, San Diego, CA.
 
-Melo-Merino, S. M., Reyes-Bonilla, H., & Lira-Noriega, A. (2020). Ecological niche models and species distribution models in marine environments: A literature review and spatial analysis of evidence. Ecological Modelling, 415, 108837. https://doi.org/10.1016/j.ecolmodel.2019.108837
+Melo-Merino, S. M., Reyes-Bonilla, H., & Lira-Noriega, A. (2020). Ecological niche models and species distribution models in marine environments: A literature review and spatial analysis of evidence. Ecological Modelling, 415, 108837. <https://doi.org/10.1016/j.ecolmodel.2019.108837>
 
-Sbrocco, E. J., & Barber, P. H. (2013). MARSPEC: Ocean climate layers for marine spatial ecology: Ecological Archives E094-086. Ecology, 94(4), 979–979. https://doi.org/10.1890/12-1358.1
+Sbrocco, E. J., & Barber, P. H. (2013). MARSPEC: Ocean climate layers for marine spatial ecology: Ecological Archives E094-086. Ecology, 94(4), 979–979. <https://doi.org/10.1890/12-1358.1>
 
-Assis J, Tyberghein L, Bosch S, Verbruggen H, Serr~ao EA, De Clerck O (2018). Bio-ORACLE v2.0: Extending marine data layers for bioclimatic modelling. Global Ecol Biogeogr. ;27:277–284. https://doi.org/10.1111/geb.12693
+Assis J, Tyberghein L, Bosch S, Verbruggen H, Serr~ao EA, De Clerck O (2018). Bio-ORACLE v2.0: Extending marine data layers for bioclimatic modelling. Global Ecol Biogeogr. ;27:277–284. <https://doi.org/10.1111/geb.12693>
 
 Perrin, W. F., Würsig, B., & Thewissen, J. G. M. (Eds.). (2018). Encyclopedia of Marine Mammals (3rd ed.). Academic Press.
